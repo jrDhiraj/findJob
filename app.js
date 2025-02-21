@@ -14,6 +14,7 @@ const ExpressError = require('./utils/expressError');
 const listingRoutes = require('./routes/listing');
 const userRoutes = require("./routes/user");
 const MongoStore = require('connect-mongo');
+const client = new MongoClient(DBurl, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 const port = 3000;
