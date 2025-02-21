@@ -5,6 +5,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const { MongoClient } = require('mongodb');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -49,6 +50,7 @@ const store = MongoStore.create({
     secret:process.env.SECRET,
   },
   touchAfter:24*3600,
+  client: client,
 })
 const sessionOptions = {
   store,
