@@ -14,13 +14,14 @@ const ExpressError = require('./utils/expressError');
 const listingRoutes = require('./routes/listing');
 const userRoutes = require("./routes/user");
 const MongoStore = require('connect-mongo');
-const client = new MongoClient(DBurl, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 const port = 3000;
 
+// ✅ Ensure DBurl is defined before using it
+const DBurl = process.env.DB_URL || "mongodb://localhost:27017/your_database_name";
+
 // ✅ CONNECT TO MONGODB
-const DBurl = process.env.dbUrl;
 async function main() {
   try {
     await mongoose.connect(DBurl, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -32,6 +33,9 @@ async function main() {
 }
 main();
 
+// ✅ MongoClient Initialization (Only if Needed)
+const client = new MongoClient(DBurl, { useNewUrlParser: true, useUnifiedTopology: true });
+
 // ✅ SETUP EJS & STATIC FILES
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
@@ -42,30 +46,24 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 
 // ✅ SESSION CONFIGURATION
-
-
-
 const store = MongoStore.create({
   mongoUrl: DBurl,
-  crypto:{
-    secret:process.env.SECRET,
-  },
-  touchAfter:24*3600,
-  client: client,
-})
+  crypto: { secret: process.env.SECRET },
+  touchAfter: 24 * 3600,
+});
+
 const sessionOptions = {
   store,
-  secret: process.env.SECRET,
+  secret: process.env.SECRET || 'fallbacksecret',
   resave: false,
-    saveUninitialized: true,
-    cookie: { 
-      httpOnly: true,
-      secure: false,
-      expire: 1000*60*60*24, // Change to true if using HTTPS
-      maxAge: 1000 * 60 * 60 * 24
-
-    },
+  saveUninitialized: true,
+  cookie: { 
+    httpOnly: true,
+    secure: false, // Set to true if using HTTPS
+    maxAge: 1000 * 60 * 60 * 24, // 1 Day
+  },
 };
+
 app.use(session(sessionOptions));
 app.use(flash());
 
@@ -104,4 +102,3 @@ app.use((err, req, res, next) => {
 
 // ✅ START SERVER
 app.listen(port, () => console.log(`🚀 Server running on http://localhost:${port}`));
-
