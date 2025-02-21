@@ -19,7 +19,7 @@ const app = express();
 const port = 3000;
 
 // ✅ Ensure DBurl is defined before using it
-const DBurl = process.env.DB_URL || "mongodb://localhost:27017/your_database_name";
+const DBurl = process.env.DB_URL;
 
 // ✅ CONNECT TO MONGODB
 async function main() {
