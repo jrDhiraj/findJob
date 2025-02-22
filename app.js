@@ -5,7 +5,7 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
-const { MongoClient } = require('mongodb');
+const {MongoClient} = require('mongodb');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -19,7 +19,7 @@ const app = express();
 const port = 3000;
 
 // ✅ Ensure DBurl is defined before using it
-const DBurl = process.env.DB_URL;
+const DBurl =process.env.dbUrl;
 
 // ✅ CONNECT TO MONGODB
 async function main() {
@@ -35,6 +35,10 @@ main();
 
 // ✅ MongoClient Initialization (Only if Needed)
 const client = new MongoClient(DBurl, { useNewUrlParser: true, useUnifiedTopology: true });
+app.get("", (req, res)=>{
+  res.redirect("/listing")
+})
+
 
 // ✅ SETUP EJS & STATIC FILES
 app.engine('ejs', ejsMate);
